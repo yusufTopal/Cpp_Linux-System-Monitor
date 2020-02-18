@@ -225,14 +225,68 @@ string LinuxParser::Ram(int pid[[maybe_unused]]) {
   return string(); }
 
 // TODO: Read and return the user ID associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]) {
-   return string(); }
+/* There are 4 different UIDs in Uid row, they are as follows
+Uid: real UID, effective UID, saved set UID, and file system UID
+*/
+string LinuxParser::Uid(int pid) {
+  string  line,key,uid,uid2,uid3,uid4;
+   string filePath =
+      kProcDirectory + '/' + to_string(pid) + '/' + kStatusFilename;
+  std::ifstream istream(filePath); 
+  if (istream.is_open()) {
+    while (std::getline(istream, line)) {
+      std::replace(line.begin(),line.end(),':',' ');
+      std::istringstream istringstream(line);
+      istringstream >> key >> uid>>uid2>>uid3>>uid4;
+      if (key == "Uid") return uid;
+    }
+  }
+
+   return string(); 
+}
 
 // TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::User(int pid) {
+  string  line;
+  string uID = LinuxParser::Uid(pid);
+  vector<vector<string>> processes;
+  char seperator =':';
+  string filePath = kPasswordPath;
+  std::ifstream istream(filePath); 
+  if (istream.is_open()) {
+    while (std::getline(istream, line)) {
+      std::istringstream istringstream(line);
+      vector<string> process;
+        while(istringstream >> line >> seperator && seperator ==':'){
+            process.emplace_back(line);
+        }
+        processes.emplace_back(process);
+    }
+    for(auto s : processes){
+        if(s.at(2)==uID){
+          return s.at(0);
+        }
+    }
+  }
+  return string(); 
+}
 
 // TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+
+long LinuxParser::UpTime(int pid) {
+   string  line,key,memory,kb;
+   vector<string> stats{};
+   string filePath =
+      kProcDirectory + '/' + to_string(pid) + '/' + kStatFilename;
+  std::ifstream istream(filePath); 
+  if (istream.is_open()) {
+    while (std::getline(istream, line)) {
+      std::istringstream istringstream(line);
+      while(istringstream >> line){
+        stats.emplace_back(line);
+      }
+    }
+    return stol(stats[21]);
+  }
+
+   return 0; }
