@@ -82,7 +82,8 @@ float LinuxParser::MemoryUtilization() {
         if (key == "Cached") cached = std::stof(value);
       }
     }
-    memUt = 100 - (((memFree + buffers + cached) * 100) / memTotal);
+    //memUt = 100 - (((memFree + buffers + cached) * 100) / memTotal);
+    memUt = (memFree+buffers+cached)/memTotal;
     return memUt;
   }
   return 0.0;
@@ -219,7 +220,7 @@ string LinuxParser::Command(int pid) {
 }
 
 // TODO: Read and return the memory used by a process
-string LinuxParser::Ram(int pid[[maybe_unused]]) { 
+string LinuxParser::Ram(int pid) { 
   string  line,key,memory,kb;
    string filePath =
       kProcDirectory + '/' + to_string(pid) + '/' + kStatusFilename;

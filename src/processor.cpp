@@ -1,15 +1,25 @@
 #include "processor.h"
-#include "linux_parser.h"
 #include <string>
-// TODO: Return the aggregate CPU utilization
-float Processor::Utilization() {     
-    auto cpuStats =LinuxParser::CpuUtilization();
-    cumIdle = std::stof(cpuStats[0].at(4));
-      
-    /*Idle = idle + iowait
-    NonIdle = user + nice + system + irq + softirq + steal
-    Total = Idle + NonIdle
-
-    CPU_Percentage = (totald - idled)/totald
-    */
-    return 0.0; }
+#include "linux_parser.h"
+float Processor::Utilization() {
+  auto cpuStats = LinuxParser::CpuUtilization();
+  if (!cpuStats[0].empty()) {
+    std::istringstream stringstream(cpuStats[0]);
+    std::string line;
+    int jifCounter = 0;
+    while (stringstream) {
+      stringstream >> line;
+      if (line != "cpu") {
+        cpuJiffies[jifCounter] = std::stof(line);
+        jifCounter++;
+      }
+    }
+    idle = cpuJiffies[3] + cpuJiffies[4];
+    nonIdle = cpuJiffies[0] + cpuJiffies[1] + cpuJiffies[2] + cpuJiffies[5] +
+              cpuJiffies[6] + cpuJiffies[7];
+    total = idle + nonIdle;
+    cpuPercentage = (total - idle) / total;
+    return cpuPercentage;
+  }
+  return 0.0;
+}
