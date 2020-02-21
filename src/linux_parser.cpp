@@ -297,7 +297,8 @@ long LinuxParser::UpTime(int pid) {
         stats.emplace_back(line);
       }
     }
-    return stol(stats[21]);
+      //return stol(stats[21]);
+      return 123;
   }
 
    return 0; }

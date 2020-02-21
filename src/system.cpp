@@ -18,6 +18,11 @@ Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
+    
+    auto pidList=LinuxParser::Pids();
+    for(auto pid :pidList){
+        processes_.emplace_back(Process(pid));
+    }
     return processes_; 
 }
 
@@ -37,5 +42,5 @@ int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
 // TODO: Return the number of seconds since the system started running
-long System::UpTime() { return LinuxParser::UpTime(); 
+long int System::UpTime() { return LinuxParser::UpTime();
 }
