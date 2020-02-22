@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
-
 #include "linux_parser.h"
 
 using std::stof;
@@ -177,9 +176,9 @@ vector<string> LinuxParser::CpuUtilization() {
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
-  string key, line;
+  string key, line,totalPcs;
   int totalProcessCount;
-  std::ifstream istream(kProcDirectory + kMeminfoFilename);
+  std::ifstream istream(kProcDirectory + kStatFilename);
   if (istream.is_open()) {
     while (std::getline(istream, line)) {
       std::istringstream istringstream(line);
@@ -187,14 +186,14 @@ int LinuxParser::TotalProcesses() {
       if (key == "processes") return totalProcessCount;
     }
   }
-  return 0;
+  return 5;
 }
 
 // TODO: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
   string key, line;
   int totalProcessCount;
-  std::ifstream istream(kProcDirectory + kMeminfoFilename);
+  std::ifstream istream(kProcDirectory + kStatFilename);
   if (istream.is_open()) {
     while (std::getline(istream, line)) {
       std::istringstream istringstream(line);
@@ -209,7 +208,7 @@ int LinuxParser::RunningProcesses() {
 string LinuxParser::Command(int pid) {
   string command;
   string filePath =
-      kProcDirectory + '/' + to_string(pid) + '/' + kCmdlineFilename;
+      kProcDirectory + "/" + to_string(pid) + "/" + kCmdlineFilename;
   std::ifstream istream(filePath);
   if (istream.is_open()) {
     while (getline(istream, command)) {
@@ -223,7 +222,7 @@ string LinuxParser::Command(int pid) {
 string LinuxParser::Ram(int pid) { 
   string  line,key,memory,kb;
    string filePath =
-      kProcDirectory + '/' + to_string(pid) + '/' + kStatusFilename;
+      kProcDirectory + "/" + to_string(pid) + "/" + kStatusFilename;
   std::ifstream istream(filePath); 
   if (istream.is_open()) {
     while (std::getline(istream, line)) {
@@ -242,7 +241,7 @@ Uid: real UID, effective UID, saved set UID, and file system UID
 string LinuxParser::Uid(int pid) {
   string  line,key,uid,uid2,uid3,uid4;
    string filePath =
-      kProcDirectory + '/' + to_string(pid) + '/' + kStatusFilename;
+      kProcDirectory + "/" + to_string(pid) + "/"+ kStatusFilename;
   std::ifstream istream(filePath); 
   if (istream.is_open()) {
     while (std::getline(istream, line)) {
@@ -288,7 +287,7 @@ long LinuxParser::UpTime(int pid) {
    string  line,key,memory,kb;
    vector<string> stats{};
    string filePath =
-      kProcDirectory + '/' + to_string(pid) + '/' + kStatFilename;
+      kProcDirectory + "/" + to_string(pid) + "/" + kStatFilename;
   std::ifstream istream(filePath); 
   if (istream.is_open()) {
     while (std::getline(istream, line)) {
@@ -297,8 +296,8 @@ long LinuxParser::UpTime(int pid) {
         stats.emplace_back(line);
       }
     }
-      //return stol(stats[21]);
-      return 123;
+      return stol(stats[21]);
+    
   }
 
    return 0; }

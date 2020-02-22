@@ -13,26 +13,25 @@ using std::vector;
 Process::Process(int id): pid(id) {
     cpuUtilization=CpuUtilization();
     cmd=Command();
+    user= LinuxParser::User(pid);
+    upTime=LinuxParser::UpTime(pid);
+    ram= LinuxParser::Ram(pid);
 }
 
 // TODO: Return this process's ID
 int Process::Pid() {  return pid;}
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+float Process::CpuUtilization() { return cpuUtilization; }
 
 // TODO: Return the command that generated this process
-string Process::Command() { return LinuxParser::Command(pid); }
+string Process::Command() { return cmd; }
 
 // TODO: Return this process's memory utilization
 string Process::Ram() { return LinuxParser::Ram(pid); }
 
 // TODO: Return the user (name) that generated this process
-string Process::User() { 
-    if(user.empty())
-        user =LinuxParser::User(pid);
-    return user;     
-}
+string Process::User() {return user;}
      
 
 // TODO: Return the age of this process (in seconds)
