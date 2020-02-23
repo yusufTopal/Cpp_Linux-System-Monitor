@@ -1,9 +1,7 @@
 #include "processor.h"
 #include <string>
 #include "linux_parser.h"
-Processor::Processor(){
-  Processor::Utilization();
-}
+
 float Processor::Utilization() {
   auto cpuStats = LinuxParser::CpuUtilization();
   if (!cpuStats[0].empty()) {
