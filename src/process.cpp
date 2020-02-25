@@ -14,12 +14,42 @@ using std::vector;
 
 Process::Process(int id) : pid(id){
     cmd= LinuxParser::Command(pid);
-  
+    ram= LinuxParser::Ram(pid);
+    cpuUtilization= CpuUtilization();
 }
-
+void Process::operator=(const Process &M ) { 
+        cpuUtilization = M.cpuUtilization;
+        cmd= M.cmd;
+        ram=M.ram;
+        user=M.user;
+    }
 // TODO: Return this process's ID
 int Process::Pid() { return pid;}
 
+/*float Process::CpuUtilization(){
+    std::stringstream path;
+    vector<string> data;
+    path << kProcDirectory << "/" << pid << kStatFilename;
+    std::ifstream is(path.str());
+    string line;
+    if(is.is_open()){
+        while(getline(is,line)){
+            std::istringstream ss(line);
+            string val;
+            ss>>val;
+            data.push_back(val);
+        }
+    long long uptime = LinuxParser::UpTime();
+    long int hertz = sysconf(_SC_CLK_TCK);
+    float  total_time = stoi(data[14] )+ stoi(data[15])+
+                        stoi(data[16]) + stoi(data[17]);
+    long int seconds = uptime -  (stoi(data[22])/ hertz);
+    float result = 100 * ((total_time / hertz) / seconds);
+    return result;
+    }
+    return 0;
+
+}*/
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() {
     std::stringstream path;
@@ -45,7 +75,7 @@ float Process::CpuUtilization() {
             }
         }
     }
-    long long uptime = UpTime();
+    long long uptime = LinuxParser::UpTime();
     long int hertz = sysconf(_SC_CLK_TCK);
     float  total_time = data[14] + data[15] +
                         data[16] + data[17];
@@ -55,6 +85,7 @@ float Process::CpuUtilization() {
   }
 
 // TODO: Return the command that generated this process
+
 string Process::Command() { return LinuxParser::Command(pid);; }
 
 // TODO: Return this process's memory utilization
