@@ -258,30 +258,7 @@ string LinuxParser::Uid(int pid) {
 }
 
 // TODO: Read and return the user associated with a process
-/*string LinuxParser::User(int pid) {
-  string line;
-  string uID = LinuxParser::Uid(pid);
-  vector<vector<string>> processes;
-  char seperator = ':';
-  string filePath = kPasswordPath;
-  std::ifstream istream(filePath);
-  if (istream.is_open()) {
-    while (std::getline(istream, line)) {
-      std::istringstream istringstream(line);
-      vector<string> process;
-      while (istringstream >> line >> seperator && seperator == ':') {
-        process.emplace_back(line);
-      }
-      processes.emplace_back(process);
-    }
-    for (auto s : processes) {
-      if (s.at(2) == uID) {
-        return s.at(0);
-      }
-    }
-  }
-  return string();
-}*/
+
 string LinuxParser::User(int pid) {
   string uid = LinuxParser::Uid(pid);
   string line;

@@ -26,30 +26,6 @@ void Process::operator=(const Process &M ) {
 // TODO: Return this process's ID
 int Process::Pid() { return pid;}
 
-/*float Process::CpuUtilization(){
-    std::stringstream path;
-    vector<string> data;
-    path << kProcDirectory << "/" << pid << kStatFilename;
-    std::ifstream is(path.str());
-    string line;
-    if(is.is_open()){
-        while(getline(is,line)){
-            std::istringstream ss(line);
-            string val;
-            ss>>val;
-            data.push_back(val);
-        }
-    long long uptime = LinuxParser::UpTime();
-    long int hertz = sysconf(_SC_CLK_TCK);
-    float  total_time = stoi(data[14] )+ stoi(data[15])+
-                        stoi(data[16]) + stoi(data[17]);
-    long int seconds = uptime -  (stoi(data[22])/ hertz);
-    float result = 100 * ((total_time / hertz) / seconds);
-    return result;
-    }
-    return 0;
-
-}*/
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() {
     std::stringstream path;
@@ -57,11 +33,11 @@ float Process::CpuUtilization() {
     std::ifstream is(path.str());
     string line;
     std::unordered_map<int ,int> data = {
+            {13,0},
             {14,0},
             {15,0},
             {16,0},
-            {17,0},
-            {22,0}};
+            {21,0}};
     if (is.is_open()) {
         getline(is, line);
         std::istringstream ss(line);
@@ -77,10 +53,10 @@ float Process::CpuUtilization() {
     }
     long long uptime = LinuxParser::UpTime();
     long int hertz = sysconf(_SC_CLK_TCK);
-    float  total_time = data[14] + data[15] +
-                        data[16] + data[17];
-    long int seconds = uptime -  (data[22] / hertz);
-    float result = 100 * ((total_time / hertz) / seconds);
+    float  total_time = data[13] + data[14] +
+                        data[15] + data[16];
+    long int seconds = uptime -  (data[21] / hertz);
+    float result = ((total_time / hertz) / seconds);
     return result;
   }
 

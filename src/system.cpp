@@ -13,7 +13,7 @@ using std::size_t;
 using std::string;
 using std::vector;
 System::System(){
-  
+   
 
 }
 // TODO: Return the system's CPU
@@ -23,7 +23,7 @@ Processor& System::Cpu() {
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
    auto pids = LinuxParser::Pids();
-   processes_.reserve(pids.size());
+   
     for (int pid : pids) {
             processes_.push_back(Process(pid));
         }
