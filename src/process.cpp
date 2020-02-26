@@ -56,8 +56,8 @@ float Process::CpuUtilization() {
     float  total_time = data[13] + data[14] +
                         data[15] + data[16];
     long int seconds = uptime -  (data[21] / hertz);
-    float result = ((total_time / hertz) / seconds);
-    return result;
+    cpuUtilization = ((total_time / hertz) / seconds);
+    return cpuUtilization;
   }
 
 // TODO: Return the command that generated this process
@@ -75,4 +75,4 @@ long int Process::UpTime() { return LinuxParser::UpTime(pid);}
 
 // TODO: Overload the "less than" comparison operator for Process objects
 
-bool Process::operator<(Process const& a) const { return  cpuUtilization > a.cpuUtilization; }
+bool Process::operator<(Process const& a) const { return  this->cpuUtilization < a.cpuUtilization; }
